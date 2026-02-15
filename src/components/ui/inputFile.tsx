@@ -72,16 +72,17 @@ export default function ImageUpload({ setResult }: ImageUploadProps) {
       }
 
       setResult(data?.ingredients || "No result");
-    } catch (err: any) {
-      if (err?.name === "AbortError") {
-        setResult(
-          "Хэт удаан байна. Render сервер унтсан байж магадгүй — 10–20 секунд хүлээгээд дахин Try хийгээрэй."
-        );
-      } else {
-        console.error(err);
-        setResult("Failed to analyze image");
-      }
-    } finally {
+   } catch (err: unknown) {
+  if (err instanceof DOMException && err.name === "AbortError") {
+    setResult(
+      "Хэт удаан байна. Render сервер унтсан байж магадгүй — 10–20 секунд хүлээгээд дахин Try хийгээрэй."
+    );
+  } else {
+    console.error(err);
+    setResult("Failed to analyze image");
+  }
+} finally {
+
       cancel();
       setLoading(false);
     }

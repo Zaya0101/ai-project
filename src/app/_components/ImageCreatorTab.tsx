@@ -109,6 +109,8 @@ export default function ImageCreatorTab() {
 
         {imageUrl && (
           <img
+          /* eslint-disable @next/next/no-img-element */
+
             src={imageUrl}
             alt="Generated food"
             className="mt-3 rounded-lg border max-w-full"
