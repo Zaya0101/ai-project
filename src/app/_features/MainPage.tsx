@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import MessageCircle from "../Icons/MessageCircle";
 import ChatPopup from "../_components/Chatpopup";
@@ -11,7 +11,6 @@ import IngredientRecognitionTab from "../_components/ IngredientRecognitionTab";
 
 export default function MainPage() {
   const [openChat, setOpenChat] = useState(false);
-  const [mounted, setMounted] = useState(false);
   const [_preview, setPreview] = useState<string | null>(null);
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
@@ -26,12 +25,6 @@ export default function MainPage() {
       setLoading(false);
     }
   };
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
   return (
     <>
       <div className="flex justify-center relative">
