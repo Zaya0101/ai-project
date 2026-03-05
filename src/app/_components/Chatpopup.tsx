@@ -28,8 +28,6 @@ export default function ChatPopup({ onClose }: { onClose: () => void }) {
     const updatedMessages = [...messages, userMsg];
 
     setMessages(updatedMessages);
-
-    setMessages(updatedMessages);
     setInput("");
     setLoading(true);
 
@@ -73,13 +71,17 @@ export default function ChatPopup({ onClose }: { onClose: () => void }) {
         {messages.map((m, i) => (
           <div
             key={i}
-            className={`max-w-[80%] px-3 py-2 rounded-lg ${
-              m.role === "user"
-                ? "ml-auto bg-black text-white"
-                : "bg-gray-100 text-gray-900"
-            }`}
+            className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
           >
-            {m.text}
+            <div
+              className={`inline-block max-w-[80%] px-3 py-2 rounded-lg whitespace-pre-wrap break-words [overflow-wrap:anywhere] ${
+                m.role === "user"
+                  ? "bg-black text-white"
+                  : "bg-gray-100 text-gray-900"
+              }`}
+            >
+              {m.text}
+            </div>
           </div>
         ))}
 
