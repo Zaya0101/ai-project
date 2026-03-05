@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import MessageCircle from "../Icons/MessageCircle";
 import ChatPopup from "../_components/Chatpopup";
@@ -11,11 +11,10 @@ import IngredientRecognitionTab from "../_components/ IngredientRecognitionTab";
 
 export default function MainPage() {
   const [openChat, setOpenChat] = useState(false);
-
+  const [mounted, setMounted] = useState(false);
   const [_preview, setPreview] = useState<string | null>(null);
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [activeTab, setActiveTab] = useState("analysis");
 
   const handleTabChange = (value: string) => {
@@ -27,6 +26,11 @@ export default function MainPage() {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   return (
     <>
@@ -68,10 +72,10 @@ export default function MainPage() {
           </TabsContent>
         </Tabs>
 
-       <div
-  className="fixed bottom-8 right-8 h-12 w-12 rounded-full bg-[#18181b] flex items-center justify-center cursor-pointer"
-  onClick={() => setOpenChat(true)}
->
+        <div
+          className="fixed bottom-8 right-8 h-12 w-12 rounded-full bg-[#18181b] flex items-center justify-center cursor-pointer"
+          onClick={() => setOpenChat(true)}
+        >
           <MessageCircle />
         </div>
 

@@ -9,8 +9,9 @@ type ImageUploadProps = {
   setResult: (text: string) => void;
 };
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:999";
+const API_BASE = (
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:999"
+).replace(/\/+$/, "");
 
 function withTimeout(ms: number) {
   const controller = new AbortController();
@@ -49,40 +50,39 @@ export default function ImageUpload({ setResult }: ImageUploadProps) {
 
   const handleGenerate = async () => {
     if (!preview || loading) return;
-
     setLoading(true);
     setResult("Analyzing image...");
 
     // Render free plan унтсан байвал эхний request удааширч магадгүй
     const { controller, cancel } = withTimeout(60_000);
-
     try {
       const res = await fetch(`${API_BASE}/ingredients-from-image`, {
+        // Зам нь Backend-тэй яг ижил
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image: preview }),
         signal: controller.signal,
       });
 
-      const data = await res.json().catch(() => ({}));
-
       if (!res.ok) {
-        setResult(data?.error || data?.message || `Request failed (${res.status})`);
-        return;
+        if (res.status === 404) {
+          throw new Error(
+            `Backend зам олдсонгүй (404): ${API_BASE}/ingredients-from-image`
+          );
+        }
+        throw new Error("Сервер алдаа заалаа");
       }
 
-      setResult(data?.ingredients || "No result");
-   } catch (err: unknown) {
-  if (err instanceof DOMException && err.name === "AbortError") {
-    setResult(
-      "Хэт удаан байна. Render сервер унтсан байж магадгүй — 10–20 секунд хүлээгээд дахин Try хийгээрэй."
-    );
-  } else {
-    console.error(err);
-    setResult("Failed to analyze image");
-  }
-} finally {
-
+      const data = await res.json();
+      setResult(data.ingredients || "No result");
+    } catch (err: unknown) {
+      console.error(err);
+      if (err instanceof Error) {
+        setResult(err.message);
+      } else {
+        setResult("An unknown error occurred");
+      }
+    } finally {
       cancel();
       setLoading(false);
     }
