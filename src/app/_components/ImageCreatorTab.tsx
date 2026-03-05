@@ -7,6 +7,10 @@ import ResultIcon from "../Icons/resulticon";
 import { Textarea } from "@/components/ui/textarea";
 import { ButtonDefault } from "@/components/ui/GenerButton";
 
+const API_BASE = (
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:999"
+).replace(/\/+$/, "");
+
 export default function ImageCreatorTab() {
   const [prompt, setPrompt] = useState("");
   const [imageUrl, setImageUrl] = useState("");
@@ -19,14 +23,11 @@ export default function ImageCreatorTab() {
     setImageUrl("");
 
     try {
-      const res = await fetch(
-        "http://localhost:999/image-create",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt }),
-        }
-      );
+      const res = await fetch(`${API_BASE}/image-create`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      });
 
       if (!res.ok) {
         const text = await res.text();

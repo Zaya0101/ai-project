@@ -7,6 +7,10 @@ import PaperIcon from "../Icons/PaperIcon";
 import RefreshButton from "../Icons/RefreshButton";
 import StarIcon from "../Icons/StartIcon";
 
+const API_BASE = (
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:999"
+).replace(/\/+$/, "");
+
 export default function IngredientRecognitionTab() {
   const [text, setText] = useState("");
   const [result, setResult] = useState("");
@@ -21,14 +25,11 @@ export default function IngredientRecognitionTab() {
       setLoading(true);
       setResult("");
 
-      const res = await fetch(
-        "http://localhost:999/ingredients",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ text }),
-        }
-      );
+      const res = await fetch(`${API_BASE}/ingredients`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text }),
+      });
 
       const data = await res.json();
       setResult(data.ingredients || "No ingredients found");

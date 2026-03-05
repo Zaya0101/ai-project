@@ -4,6 +4,10 @@ import { X, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useState, useRef, useEffect } from "react";
 
+const API_BASE = (
+  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:999"
+).replace(/\/+$/, "");
+
 type Message = {
   role: "user" | "ai";
   text: string;
@@ -30,7 +34,7 @@ export default function ChatPopup({ onClose }: { onClose: () => void }) {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:999/chat", {
+      const res = await fetch(`${API_BASE}/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: updatedMessages }),
